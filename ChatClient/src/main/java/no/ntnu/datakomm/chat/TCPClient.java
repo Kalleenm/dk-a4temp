@@ -197,23 +197,72 @@ public class TCPClient {
      */
     private void parseIncomingCommands() {
         while (isConnectionActive()) {
-            // TODO Step 3: Implement this method
-            // Hint: Reuse waitServerResponse() method
-            // Hint: Have a switch-case (or other way) to check what type of response is received from the server
-            // and act on it.
-            // Hint: In Step 3 you need to handle only login-related responses.
-            // Hint: In Step 3 reuse onLoginResult() method
 
-            // TODO Step 5: update this method, handle user-list response from the server
-            // Hint: In Step 5 reuse onUserList() method
+            String serverResponse = waitServerResponse();
 
-            // TODO Step 7: add support for incoming chat messages from other users (types: msg, privmsg)
-            // TODO Step 7: add support for incoming message errors (type: msgerr)
-            // TODO Step 7: add support for incoming command errors (type: cmderr)
-            // Hint for Step 7: call corresponding onXXX() methods which will notify all the listeners
 
-            // TODO Step 8: add support for incoming supported command list (type: supported)
+            if (serverResponse != null)
+                {
+                    String[] serverResponseArr = serverResponse.split(" ", 2);
+                    String inputCase = serverResponseArr[0];
+                    String extraParameters;
+                    String[] extraParametersArr;
+                    String sender;
+                    String text;
 
+                    switch (inputCase)
+                        {
+                            case "loginok":
+                                onLoginResult(true, "");
+                                break;
+
+                            case "loginerr":
+                                extraParameters = serverResponseArr[1];
+                                onLoginResult(false, extraParameters);
+                                break;
+
+                            case "users":
+                                extraParameters = serverResponseArr[1];
+                                String[] users = extraParameters.split(" ");
+                                onUserList(users);
+                                break;
+
+                            case "msg":
+                                extraParameters = serverResponseArr[1];
+                                extraParametersArr = extraParameters.split(" ", 2);
+                                sender = extraParametersArr[0];
+                                text = extraParametersArr[1];
+                                onMsgReceived(false, sender, text);
+                                break;
+
+                            case "privmsg":
+                                extraParameters = serverResponseArr[1];
+                                extraParametersArr = extraParameters.split(" ", 2);
+                                sender = extraParametersArr[0];
+                                text = extraParametersArr[1];
+                                onMsgReceived(true, sender, text);
+                                break;
+
+                            case "msgerr":
+                                extraParameters = serverResponseArr[1];
+                                onMsgError(extraParameters);
+                                break;
+
+                            case "cmderr":
+                                extraParameters = serverResponseArr[1];
+                                onCmdError(extraParameters);
+                                break;
+
+                            case "supported":
+                                extraParameters = serverResponseArr[1];
+                                String[] supportedCommands = extraParameters.split(" ");
+                                onSupported(supportedCommands);
+                                break;
+
+                            default:
+                                break;
+                        }
+                }
         }
     }
 
