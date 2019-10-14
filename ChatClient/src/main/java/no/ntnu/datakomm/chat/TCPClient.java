@@ -129,9 +129,10 @@ public class TCPClient {
      * clear your current user list and use events in the listener.
      */
     public void refreshUserList() {
-        // TODO Step 5: implement this method
-        // Hint: Use Wireshark and the provided chat client reference app to find out what commands the
-        // client and server exchange for user listing.
+        if(isConnectionActive())
+            {
+                sendCommand("users ");
+            }
     }
 
     /**
