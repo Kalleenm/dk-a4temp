@@ -335,8 +335,11 @@ public class TCPClient {
      *
      * @param users List with usernames
      */
-    private void onUsersList(String[] users) {
-        // TODO Step 5: Implement this method
+    private void onUserList(String[] users) {
+        for(ChatListener l : listeners)
+            {
+                l.onUserList(users);
+            }
     }
 
     /**
