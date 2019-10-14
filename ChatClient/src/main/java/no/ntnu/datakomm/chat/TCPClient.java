@@ -110,6 +110,10 @@ public class TCPClient {
     public void tryLogin(String username) {
         // TODO Step 3: implement this method
         // Hint: Reuse sendCommand() method
+        if (this.connection.isConnected())
+        {
+            sendCommand("login " + username);
+        }
     }
 
     /**
