@@ -323,8 +323,10 @@ public class TCPClient {
      * Internet error)
      */
     private void onDisconnect() {
-        // TODO Step 4: Implement this method
-        // Hint: all the onXXX() methods will be similar to onLoginResult()
+        for (ChatListener l : listeners)
+        {
+            l.onDisconnect();
+        }
     }
 
     /**
